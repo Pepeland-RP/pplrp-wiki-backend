@@ -8,6 +8,7 @@ async function bootstrap() {
 
   app.use(morgan(':method :url :status - :response-time ms'));
   app.useBodyParser('json', { limit: '10mb' });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 
