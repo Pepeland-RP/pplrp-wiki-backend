@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useBodyParser('json', { limit: '10mb' });
 
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: `http://localhost:${process.env.PORT}`,
     credentials: true,
   });
 
