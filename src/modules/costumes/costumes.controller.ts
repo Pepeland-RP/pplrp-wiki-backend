@@ -17,8 +17,8 @@ export class CostumesController {
   constructor(private readonly costumesService: CostumesService) {}
 
   @Get()
-  findAll() {
-    return this.costumesService.findAll();
+  async findAll() {
+    return await this.costumesService.findAll();
   }
 
   @Post()
@@ -34,10 +34,10 @@ export class CostumesController {
       }),
     }),
   )
-  create(
+  async create(
     @Body() createCostumeDto: CreateCostumeDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.costumesService.create(createCostumeDto, file);
+    return await this.costumesService.create(createCostumeDto, file);
   }
 }

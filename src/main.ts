@@ -11,10 +11,12 @@ async function bootstrap() {
   app.use(morgan(':method :url :status - :response-time ms'));
   app.useBodyParser('json', { limit: '10mb' });
 
+  /* Пока корс не нужен
   app.enableCors({
     origin: `http://localhost:${process.env.PORT}`,
     credentials: true,
   });
+  */
 
   app.useGlobalPipes(
     new ValidationPipe({
