@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateCostumeDto } from './dto/create-costume.dto';
 
 @Injectable()
@@ -12,6 +12,7 @@ export class CostumesService {
     });
   }
 
+  // TODO: Refactor this
   async create(createCostumeDto: CreateCostumeDto, file: Express.Multer.File) {
     const imageUrl = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
 
