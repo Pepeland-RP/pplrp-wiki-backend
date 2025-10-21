@@ -27,7 +27,7 @@ async function bootstrap() {
   );
 
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/',
+    prefix: '/assets/',
   });
 
   await app.listen(process.env.PORT || 8080);

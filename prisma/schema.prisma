@@ -7,10 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// For test only
-model User {
-  id String @id
-}
+/**
+ * # Про ID ресурса
+ * Планируется реализовать общее хранилище всех ресурсов, включая изображения, модели и тд
+ * Каждый файл будет иметь имя в формате UUIDv4, а доступ к ним будет осуществляться через отдельный эндпоинт
+ */
 
 // costumes db test
 model Costume {
@@ -18,4 +19,56 @@ model Costume {
   name      String
   image     String
   createdAt DateTime @default(now())
+
+  Season   Season? @relation(fields: [seasonId], references: [id])
+  seasonId Int?
+
+  MinecraftItem MinecraftItem[]
+
+  Category   Category? @relation(fields: [CategoryId], references: [id])
+  CategoryId Int?
+
+  Gltf   Gltf?
+  GltfId Int?  @unique
+}
+
+// Таблица сезонов
+// Реляция с моделями many-to-one
+model Season {
+  id   Int    @id @default(autoincrement())
+  name String
+  icon String @default("") // ID/имя иконки; мб потом поменяем
+
+  Costumes   Costume[]
+  created_at DateTime  @default(now())
+}
+
+// Таблица с Minecraft предметами, на которые можно применить модель
+// Реляция с моделями many-to-many
+model MinecraftItem {
+  id          Int       @id @default(autoincrement())
+  name        String
+  resource_id String // ID текстуры в хранилище
+  Costumes    Costume[]
+
+  created_at DateTime @default(now())
+}
+
+// Таблица с категориями для моделей
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  Costumes Costume[]
+
+  created_at DateTime @default(now())
+}
+
+model Gltf {
+  id          Int      @id @default(autoincrement())
+  resource_id String // ID текстуры в хранилище
+  meta        Json? // Возможная мета для отображения (например размер, поворот и тд)
+  Costume     Costume? @relation(fields: [CostumeId], references: [id])
+  CostumeId   Int?     @unique
+
+  created_at DateTime @default(now())
 }
