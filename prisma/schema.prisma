@@ -3,11 +3,19 @@ generator db {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 // For test only
 model User {
   id String @id
+}
+
+// costumes db test
+model Costume {
+  id        Int      @id @default(autoincrement())
+  name      String
+  image     String
+  createdAt DateTime @default(now())
 }

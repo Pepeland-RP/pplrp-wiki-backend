@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import morgan from 'morgan';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+import morgan from 'morgan';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -9,7 +11,24 @@ async function bootstrap() {
   app.use(morgan(':method :url :status - :response-time ms'));
   app.useBodyParser('json', { limit: '10mb' });
 
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
+
+  await app.listen(process.env.PORT || 8080);
 }
 
 bootstrap();
