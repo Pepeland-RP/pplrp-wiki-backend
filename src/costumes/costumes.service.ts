@@ -7,19 +7,46 @@ export class CostumesService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.costume.findMany({
+    const costumes = await this.prisma.costume.findMany({
       orderBy: { createdAt: 'desc' },
+      include: {
+        Season: true,
+        Category: true,
+        Gltf: true,
+        MinecraftItem: true,
+      },
     });
+
+    return costumes.map(costume => ({
+      id: costume.id,
+      name: costume.name,
+      category: costume.Category?.name ?? null,
+      season: costume.Season
+        ? {
+            name: costume.Season.name,
+            icon: costume.Season.icon,
+          }
+        : null,
+      acceptable_items: costume.MinecraftItem.map(item => ({
+        name: item.name,
+        texture_id: item.resource_id,
+      })),
+      gltf: costume.Gltf
+        ? {
+            resource_id: costume.Gltf.resource_id,
+            meta: costume.Gltf.meta,
+          }
+        : null,
+    }));
   }
 
   // TODO: Refactor this
   async create(createCostumeDto: CreateCostumeDto, file: Express.Multer.File) {
-    const imageUrl = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
+    //const imageUrl = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
 
     return this.prisma.costume.create({
       data: {
         name: createCostumeDto.name,
-        image: imageUrl,
       },
     });
   }

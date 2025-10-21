@@ -17,7 +17,6 @@ datasource db {
 model Costume {
   id        Int      @id @default(autoincrement())
   name      String
-  image     String
   createdAt DateTime @default(now())
 
   Season   Season? @relation(fields: [seasonId], references: [id])
@@ -35,9 +34,9 @@ model Costume {
 // Таблица сезонов
 // Реляция с моделями many-to-one
 model Season {
-  id   Int    @id @default(autoincrement())
+  id   Int     @id @default(autoincrement())
   name String
-  icon String @default("") // ID/имя иконки; мб потом поменяем
+  icon String? // ID/имя иконки; мб потом поменяем
 
   Costumes   Costume[]
   created_at DateTime  @default(now())

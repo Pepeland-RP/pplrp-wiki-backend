@@ -10,6 +10,7 @@ async function bootstrap() {
 
   app.use(morgan(':method :url :status - :response-time ms'));
   app.useBodyParser('json', { limit: '10mb' });
+  app.setGlobalPrefix('api');
 
   /* Пока корс не нужен
   app.enableCors({
@@ -27,7 +28,10 @@ async function bootstrap() {
   );
 
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/assets/',
+    prefix: '/api/assets/',
+    setHeaders: res => {
+      res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
+    },
   });
 
   await app.listen(process.env.PORT || 8080);
