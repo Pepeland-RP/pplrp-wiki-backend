@@ -9,12 +9,12 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { CostumesService } from './costumes.service';
-import { CreateCostumeDto } from './dto/create-costume.dto';
+import { ModelsService } from './models.service';
+import { CreateModelDto } from './dto/create-model.dto';
 
-@Controller('costumes')
-export class CostumesController {
-  constructor(private readonly costumesService: CostumesService) {}
+@Controller('models')
+export class ModelsController {
+  constructor(private readonly costumesService: ModelsService) {}
 
   @Get()
   async findAll() {
@@ -35,7 +35,7 @@ export class CostumesController {
     }),
   )
   async create(
-    @Body() createCostumeDto: CreateCostumeDto,
+    @Body() createCostumeDto: CreateModelDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     return await this.costumesService.create(createCostumeDto, file);

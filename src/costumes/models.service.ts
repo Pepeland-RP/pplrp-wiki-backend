@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateCostumeDto } from './dto/create-costume.dto';
+import { CreateModelDto } from './dto/create-model.dto';
 
 @Injectable()
-export class CostumesService {
+export class ModelsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
@@ -41,7 +41,7 @@ export class CostumesService {
   }
 
   // TODO: Refactor this
-  async create(createCostumeDto: CreateCostumeDto, file: Express.Multer.File) {
+  async create(createCostumeDto: CreateModelDto, file: Express.Multer.File) {
     //const imageUrl = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
 
     return this.prisma.costume.create({
