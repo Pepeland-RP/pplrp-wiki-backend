@@ -20,7 +20,7 @@ export class CostumesService {
     return costumes.map(costume => ({
       id: costume.id,
       name: costume.name,
-      category: costume.Category?.name ?? null,
+      category: costume.Category.map(el => ({ name: el.name })),
       season: costume.Season
         ? {
             name: costume.Season.name,
