@@ -23,16 +23,14 @@ model Costume {
   seasonId Int?
 
   MinecraftItem MinecraftItem[]
-
-  Category   Category? @relation(fields: [CategoryId], references: [id])
-  CategoryId Int?
+  Category      Category[]
 
   Gltf   Gltf?
   GltfId Int?  @unique
 }
 
 // Таблица сезонов
-// Реляция с моделями many-to-one
+// Реляция с моделями many-to-many
 model Season {
   id   Int     @id @default(autoincrement())
   name String
