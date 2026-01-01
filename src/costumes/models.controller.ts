@@ -1,17 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  UseInterceptors,
-  UploadedFile,
-  Query,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ModelsService } from './models.service';
-import { CreateModelDto } from './dto/create-model.dto';
 import { ModelSearchQueryDTO } from './dto/query.dto';
 
 @Controller('models')
@@ -28,6 +16,7 @@ export class ModelsController {
     return await this.costumesService.getFilterParams();
   }
 
+  /*
   @Post()
   @UseInterceptors(
     FileInterceptor('image', {
@@ -47,4 +36,5 @@ export class ModelsController {
   ) {
     return await this.costumesService.create(createCostumeDto, file);
   }
+  */
 }

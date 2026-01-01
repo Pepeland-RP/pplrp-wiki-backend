@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateModelDto } from './dto/create-model.dto';
 import { ModelSearchQueryDTO } from './dto/query.dto';
 import { Prisma } from '@prisma/client';
 
@@ -93,6 +92,7 @@ export class ModelsService {
       })),
     };
   }
+  /*
 
   // TODO: Refactor this
   async create(createCostumeDto: CreateModelDto, file: Express.Multer.File) {
@@ -104,4 +104,5 @@ export class ModelsService {
       },
     });
   }
+    */
 }
