@@ -27,7 +27,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/api/assets/',
     setHeaders: res => {
       res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
