@@ -1,21 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateModelDto } from './dto/create-model.dto';
+import { ModelSearchQueryDTO } from './dto/query.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ModelsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
-    const costumes = await this.prisma.costume.findMany({
-      orderBy: { createdAt: 'desc' },
+  buildCostumeSearchQuery = (dto: ModelSearchQueryDTO) => {
+    const { search, seasons, categories, page = 0, take = 20 } = dto;
+
+    const where: Prisma.CostumeWhereInput = {
+      ...(search && {
+        name: {
+          contains: search,
+        },
+      }),
+
+      ...(seasons?.length && {
+        seasonId: {
+          in: seasons,
+        },
+      }),
+
+      ...(categories?.length && {
+        AND: categories.map(categoryId => ({
+          Category: {
+            some: {
+              id: categoryId,
+            },
+          },
+        })),
+      }),
+    };
+
+    return {
+      where,
+      skip: page * take,
+      take,
+      orderBy: {
+        createdAt: Prisma.SortOrder.desc,
+      },
       include: {
         Season: true,
         Category: true,
-        Gltf: true,
         MinecraftItem: true,
+        Gltf: true,
       },
-    });
+    };
+  };
+
+  async findAll(query: ModelSearchQueryDTO) {
+    const costumes = await this.prisma.costume.findMany(
+      this.buildCostumeSearchQuery(query),
+    );
+
+    console.log(this.buildCostumeSearchQuery(query).where, query);
 
     return costumes.map(costume => ({
       id: costume.id,
@@ -38,6 +79,19 @@ export class ModelsService {
           }
         : null,
     }));
+  }
+
+  async getFilterParams() {
+    const seasons = await this.prisma.season.findMany();
+    const categories = await this.prisma.category.findMany();
+
+    return {
+      seasons: seasons.map(season => ({ id: season.id, name: season.name })),
+      categories: categories.map(category => ({
+        id: category.id,
+        name: category.name,
+      })),
+    };
   }
 
   // TODO: Refactor this
