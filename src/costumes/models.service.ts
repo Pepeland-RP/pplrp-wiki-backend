@@ -51,33 +51,36 @@ export class ModelsService {
   };
 
   async findAll(query: ModelSearchQueryDTO) {
-    const costumes = await this.prisma.costume.findMany(
-      this.buildCostumeSearchQuery(query),
-    );
+    const prisma_query = this.buildCostumeSearchQuery(query);
+    const costumes = await this.prisma.costume.findMany(prisma_query);
+    const total_count = await this.prisma.costume.count({
+      where: prisma_query.where,
+    });
 
-    console.log(this.buildCostumeSearchQuery(query).where, query);
-
-    return costumes.map(costume => ({
-      id: costume.id,
-      name: costume.name,
-      category: costume.Category.map(el => ({ name: el.name })),
-      season: costume.Season
-        ? {
-            name: costume.Season.name,
-            icon: costume.Season.icon,
-          }
-        : null,
-      acceptable_items: costume.MinecraftItem.map(item => ({
-        name: item.name,
-        texture_id: item.resource_id,
+    return {
+      data: costumes.map(costume => ({
+        id: costume.id,
+        name: costume.name,
+        category: costume.Category.map(el => ({ name: el.name })),
+        season: costume.Season
+          ? {
+              name: costume.Season.name,
+              icon: costume.Season.icon,
+            }
+          : null,
+        acceptable_items: costume.MinecraftItem.map(item => ({
+          name: item.name,
+          texture_id: item.resource_id,
+        })),
+        gltf: costume.Gltf
+          ? {
+              resource_id: costume.Gltf.resource_id,
+              meta: costume.Gltf.meta,
+            }
+          : null,
       })),
-      gltf: costume.Gltf
-        ? {
-            resource_id: costume.Gltf.resource_id,
-            meta: costume.Gltf.meta,
-          }
-        : null,
-    }));
+      total_count,
+    };
   }
 
   async getFilterParams() {

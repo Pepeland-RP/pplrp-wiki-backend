@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class ModelSearchQueryDTO {
   @IsString()
@@ -55,6 +55,7 @@ export class ModelSearchQueryDTO {
   @IsOptional()
   @Type(() => Number)
   @Min(1)
-  @Max(100)
+  // Убрал на свой страх и риск, если ебанет - не моя проблема)
+  //@Max(100)
   take?: number;
 }
