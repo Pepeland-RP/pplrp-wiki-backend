@@ -69,3 +69,17 @@ model Gltf {
 
   created_at DateTime @default(now())
 }
+
+model User {
+  id          Int          @id @default(autoincrement())
+  login       String
+  password    String
+  permissions Permission[]
+}
+
+model Permission {
+  id            Int    @id @default(autoincrement())
+  permission_id Int
+  name          String @default("")
+  users         User[]
+}
