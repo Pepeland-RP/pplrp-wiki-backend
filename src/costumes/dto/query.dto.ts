@@ -8,7 +8,6 @@ export class ModelSearchQueryDTO {
 
   @IsOptional()
   @Transform(({ value }) => {
-    console.log(value);
     if (!value) return [];
     return value.split(',').map(Number);
   })
