@@ -1,11 +1,10 @@
 generator db {
-  provider   = "prisma-client"
-  engineType = "client"
-  output     = "../dist/generated"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 /**
@@ -46,6 +45,7 @@ model Season {
 model MinecraftItem {
   id          Int       @id @default(autoincrement())
   name        String
+  str_id      String
   resource_id String // ID текстуры в хранилище
   Costumes    Costume[]
 

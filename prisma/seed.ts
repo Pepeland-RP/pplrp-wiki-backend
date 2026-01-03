@@ -1,4 +1,3 @@
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from '@prisma/client';
 import { copyFile, readdir, readFile } from 'fs/promises';
 import { v4 } from 'uuid';
@@ -6,16 +5,16 @@ import dotenv from 'dotenv';
 import { rmSync } from 'fs';
 dotenv.config();
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL,
-});
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 const main = async () => {
   await prisma.$connect();
 
   const costumes_raw = await readFile('prisma/seed_data/costumes.json');
   const costumes = JSON.parse(costumes_raw.toString());
+
+  const langs_raw = await readFile('prisma/seed_data/ru_ru.json');
+  const langs = JSON.parse(langs_raw.toString());
 
   const processed_costumes: string[] = [];
 
@@ -83,7 +82,7 @@ const main = async () => {
               .toLowerCase();
 
             const exist_item = await tx.minecraftItem.findFirst({
-              where: { name: item_name },
+              where: { str_id: item_name },
             });
 
             if (exist_item) {
@@ -96,8 +95,16 @@ const main = async () => {
               );
 
               generated_assets.push(item_uid);
+
+              const ru_name = Object.entries(langs).find(
+                ([k]) => k.split('.').reverse()[0] === item_name,
+              ) as [string, string] | undefined;
               const new_item = await tx.minecraftItem.create({
-                data: { name: item_name, resource_id: item_uid },
+                data: {
+                  name: ru_name?.at(1) ?? item_name,
+                  resource_id: item_uid,
+                  str_id: item_name,
+                },
               });
               minecraft_items.push(new_item.id);
             }
