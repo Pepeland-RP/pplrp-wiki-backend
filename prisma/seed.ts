@@ -3,6 +3,7 @@ import { copyFile, readdir, readFile } from 'fs/promises';
 import { v4 } from 'uuid';
 import dotenv from 'dotenv';
 import { rmSync } from 'fs';
+import bcrypt from 'bcryptjs';
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -144,6 +145,10 @@ const main = async () => {
       .map(i => i.name)
       .filter(c => !processed_costumes.includes(c.split('.')[0])),
   );
+
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync('admin', salt);
+  await prisma.user.create({ data: { login: 'admin', password: hash } });
 };
 
 main()
