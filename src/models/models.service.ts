@@ -95,17 +95,4 @@ export class ModelsService {
       })),
     };
   }
-  /*
-
-  // TODO: Refactor this
-  async create(createCostumeDto: CreateModelDto, file: Express.Multer.File) {
-    //const imageUrl = `http://localhost:${process.env.PORT}/uploads/${file.filename}`;
-
-    return this.prisma.costume.create({
-      data: {
-        name: createCostumeDto.name,
-      },
-    });
-  }
-    */
 }

@@ -55,7 +55,7 @@ model MinecraftItem {
 // Таблица с категориями для моделей
 model Category {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String    @unique
   Costumes Costume[]
 
   created_at DateTime @default(now())

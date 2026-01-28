@@ -19,7 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 } from 'uuid';
 import { rm } from 'fs/promises';
-import { CreateMinecraftItemDTO } from './dto/admin.dto';
+import { CreateMinecraftItemDTO, CreateModelDTO } from './dto/admin.dto';
 
 const UploadInterceptor = () =>
   FileInterceptor('file', {
@@ -81,5 +81,21 @@ export class AdminController {
   @Auth()
   async deleteItem(@Param('id') id: string) {
     await this.adminService.deleteMinecraftItem(id);
+  }
+
+  @Post('models')
+  @Auth()
+  @UseInterceptors(UploadInterceptor())
+  async createModel(
+    @Body() body: CreateModelDTO,
+    @UploadedFile(ValidationPipe)
+    file: Express.Multer.File,
+  ) {
+    try {
+      await this.adminService.createModel(body, file.filename);
+    } catch (e) {
+      await rm(file.path);
+      throw e;
+    }
   }
 }

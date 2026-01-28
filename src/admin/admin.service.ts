@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateMinecraftItemDTO } from './dto/admin.dto';
+import { CreateMinecraftItemDTO, CreateModelDTO } from './dto/admin.dto';
 import { rm } from 'fs/promises';
 
 @Injectable()
@@ -47,5 +47,49 @@ export class AdminService {
     });
     await this.removeAsset(item.resource_id);
     await this.prisma.minecraftItem.delete({ where: { id: item.id } });
+  }
+
+  async createSeason(name: string) {
+    const existed = await this.prisma.season.findFirst({
+      where: { name },
+    });
+
+    if (existed) return existed.id;
+    const created = await this.prisma.season.create({
+      data: { name },
+    });
+
+    return created.id;
+  }
+
+  async createCategories(categories: string[]) {
+    const existing = await this.prisma.category.findMany({
+      where: { name: { in: categories } },
+    });
+
+    const existingNames = new Set(existing.map(c => c.name));
+    const toCreate = categories.filter(name => !existingNames.has(name));
+
+    const created = await Promise.all(
+      toCreate.map(name => this.prisma.category.create({ data: { name } })),
+    );
+
+    return [...existing.map(c => c.id), ...created.map(c => c.id)];
+  }
+
+  async createModel(body: CreateModelDTO, asset_id: string) {
+    await this.prisma.costume.create({
+      data: {
+        name: body.name,
+        seasonId: await this.createSeason(body.season),
+        MinecraftItem: { connect: body.minecraftItem.map(i => ({ id: i })) },
+        Category: {
+          connect: (await this.createCategories(body.category)).map(i => ({
+            id: i,
+          })),
+        },
+        Gltf: { create: { resource_id: asset_id, meta: body.gltfMeta } },
+      },
+    });
   }
 }
