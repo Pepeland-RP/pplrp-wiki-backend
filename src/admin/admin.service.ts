@@ -136,6 +136,7 @@ export class AdminService {
     });
     if (model.Gltf) await this.removeAsset(model.Gltf.resource_id);
     await this.prisma.costume.delete({ where: { id: model.id } });
+    await this.cleanupCategorySeasons();
   }
 
   async cleanupCategorySeasons() {
