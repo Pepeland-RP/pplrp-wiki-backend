@@ -98,4 +98,29 @@ export class AdminController {
       throw e;
     }
   }
+
+  // WARNING: CODE BELOW IS UNTESTED!!
+  @Put('models/:id')
+  @Auth()
+  @UseInterceptors(UploadInterceptor())
+  async editModel(
+    @Param('id') id: string,
+    @Body() body: CreateModelDTO,
+    @UploadedFile(ValidationPipe)
+    file: Express.Multer.File,
+  ) {
+    try {
+      await this.adminService.editModel(id, body, file.filename);
+    } catch (e) {
+      await rm(file.path);
+      throw e;
+    }
+  }
+
+  @Delete('models/:id')
+  @Auth()
+  @UseInterceptors(UploadInterceptor())
+  async deleteModel(@Param('id') id: string) {
+    await this.adminService.deleteModel(id);
+  }
 }

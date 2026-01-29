@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMinecraftItemDTO, CreateModelDTO } from './dto/admin.dto';
 import { rm } from 'fs/promises';
+import { join } from 'path';
 
 @Injectable()
 export class AdminService {
   constructor(private prisma: PrismaService) {}
 
   async removeAsset(id: string) {
-    await rm(`uploads/${id}`);
+    await rm(join('uploads', id));
   }
 
   async getMinecraftItems() {
@@ -77,6 +78,7 @@ export class AdminService {
     return [...existing.map(c => c.id), ...created.map(c => c.id)];
   }
 
+  /** Create model */
   async createModel(body: CreateModelDTO, asset_id: string) {
     await this.prisma.costume.create({
       data: {
@@ -90,6 +92,56 @@ export class AdminService {
         },
         Gltf: { create: { resource_id: asset_id, meta: body.gltfMeta } },
       },
+    });
+  }
+
+  /** Edit model by provided id */
+  async editModel(id: string, body: CreateModelDTO, asset_id: string) {
+    const model = await this.prisma.costume.findUniqueOrThrow({
+      where: { id: parseInt(id) },
+      include: { Gltf: true },
+    });
+
+    try {
+      if (model.Gltf) {
+        await this.removeAsset(model.Gltf.resource_id);
+      }
+    } catch (e) {
+      console.error('Cannot delete old resource:', e);
+    }
+
+    await this.prisma.costume.update({
+      where: { id: model.id },
+      data: {
+        name: body.name,
+        seasonId: await this.createSeason(body.season),
+        MinecraftItem: { set: body.minecraftItem.map(i => ({ id: i })) },
+        Category: {
+          set: (await this.createCategories(body.category)).map(i => ({
+            id: i,
+          })),
+        },
+        Gltf: { create: { resource_id: asset_id, meta: body.gltfMeta } },
+      },
+    });
+
+    await this.cleanupCategorySeasons();
+  }
+
+  /** Delete model by provided id */
+  async deleteModel(id: string) {
+    const model = await this.prisma.costume.findUniqueOrThrow({
+      where: { id: parseInt(id) },
+      include: { Gltf: true },
+    });
+    if (model.Gltf) await this.removeAsset(model.Gltf.resource_id);
+    await this.prisma.costume.delete({ where: { id: model.id } });
+  }
+
+  async cleanupCategorySeasons() {
+    await this.prisma.season.deleteMany({ where: { Costumes: { none: {} } } });
+    await this.prisma.category.deleteMany({
+      where: { Costumes: { none: {} } },
     });
   }
 }
