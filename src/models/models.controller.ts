@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ModelsService } from './models.service';
 import { ModelSearchQueryDTO } from './dto/query.dto';
 
@@ -16,25 +16,8 @@ export class ModelsController {
     return await this.costumesService.getFilterParams();
   }
 
-  /*
-  @Post()
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
-    }),
-  )
-  async create(
-    @Body() createCostumeDto: CreateModelDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return await this.costumesService.create(createCostumeDto, file);
+  @Get(':id')
+  async findOne(@Param('id') param: string) {
+    return await this.costumesService.getOne(param);
   }
-  */
 }

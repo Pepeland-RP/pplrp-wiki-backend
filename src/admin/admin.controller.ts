@@ -99,7 +99,6 @@ export class AdminController {
     }
   }
 
-  // WARNING: CODE BELOW IS UNTESTED!!
   @Put('models/:id')
   @Auth()
   @UseInterceptors(UploadInterceptor())
