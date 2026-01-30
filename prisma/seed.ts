@@ -147,8 +147,10 @@ const main = async () => {
   );
 
   const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync('admin', salt);
-  await prisma.user.create({ data: { login: 'admin', password: hash } });
+  const hash = bcrypt.hashSync(process.env.ADMIN_PASSWORD!, salt);
+  await prisma.user.create({
+    data: { login: process.env.ADMIN_USERNAME!, password: hash },
+  });
 };
 
 main()
