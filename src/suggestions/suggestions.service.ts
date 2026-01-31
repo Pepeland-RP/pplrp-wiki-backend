@@ -45,6 +45,7 @@ export class SuggestionsService {
     return suggestions.map(sug => ({
       nickname: sug.nickname,
       content: sug.content,
+      created_at: sug.created_at,
       images: sug.images.map(i => ({ id: i.id, resource_id: i.resource_id })),
       links: sug.links.map(l => l.content),
     }));

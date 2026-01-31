@@ -90,8 +90,9 @@ model Permission {
 model Suggestions {
   id Int @id @default(autoincrement())
 
-  nickname String
-  content  String
+  nickname   String
+  content    String
+  created_at DateTime @default(now())
 
   images SuggestionImage[]
   links  SuggestionLink[]
