@@ -86,3 +86,31 @@ model Permission {
   name          String @default("")
   users         User[]
 }
+
+model Suggestions {
+  id Int @id @default(autoincrement())
+
+  nickname String
+  content  String
+
+  images SuggestionImage[]
+  links  SuggestionLink[]
+}
+
+model SuggestionImage {
+  id Int @id @default(autoincrement())
+
+  resource_id String
+
+  suggestion   Suggestions? @relation(fields: [suggestionId], references: [id])
+  suggestionId Int?
+}
+
+model SuggestionLink {
+  id Int @id @default(autoincrement())
+
+  content String
+
+  suggestion   Suggestions? @relation(fields: [suggestionId], references: [id])
+  suggestionId Int?
+}
