@@ -36,6 +36,8 @@ model Season {
   name String
   icon String? // ID/имя иконки; мб потом поменяем
 
+  priority Int @default(0) // Сортировка на основе сезона. Больше значение - больше приоритет (не используется)
+
   Costumes   Costume[]
   created_at DateTime  @default(now())
 }
