@@ -42,7 +42,7 @@ export class SuggestionsService {
       include: { images: true, links: true },
     });
 
-    return suggestions.map(sug => ({
+    return suggestions.reverse().map(sug => ({
       nickname: sug.nickname,
       content: sug.content,
       created_at: sug.created_at,
