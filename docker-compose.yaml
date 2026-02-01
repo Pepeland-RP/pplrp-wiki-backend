@@ -3,6 +3,7 @@ services:
         container_name: pplpack_api
         volumes:
             - ./data:/app/data
+            - ./uploads:/app/uploads
         build:
             context: .
             dockerfile: Dockerfile

@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { copyFile, readdir, readFile } from 'fs/promises';
-import { v4 } from 'uuid';
 import dotenv from 'dotenv';
 import { rmSync } from 'fs';
 import bcrypt from 'bcryptjs';
@@ -9,6 +8,7 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 const main = async () => {
+  const { v4 } = await import('uuid');
   await prisma.$connect();
 
   const costumes_raw = await readFile('prisma/seed_data/costumes.json');
