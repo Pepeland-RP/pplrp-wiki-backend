@@ -30,7 +30,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24 * 365,
       httpOnly: false,
     });
-    return { status: 'Success' };
+    return { status: 'Success', token };
   }
 
   @Get('/me')
