@@ -58,7 +58,12 @@ export class AuthService {
 
   async verify(token: string): Promise<JWTPayload | null> {
     try {
-      return jwt.verify(token, this.publicKey) as JWTPayload;
+      const payload = jwt.verify(token, this.publicKey) as JWTPayload;
+      await this.prisma.user.findFirstOrThrow({
+        where: { id: payload.user.user_id, login: payload.user.login },
+      });
+
+      return payload;
     } catch {
       return null;
     }

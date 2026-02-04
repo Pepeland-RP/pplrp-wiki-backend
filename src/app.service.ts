@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'PPLRP Wiki Backend initialized.';
+  getHello() {
+    return { message: 'Hello from Pepeland Pack Wiki Backend' };
   }
 }
