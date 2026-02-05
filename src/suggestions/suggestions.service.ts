@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateSuggestionDTO } from './dto/create.dto';
+import { rm } from 'node:fs/promises';
+import { join } from 'node:path';
 
 @Injectable()
 export class SuggestionsService {
@@ -53,6 +55,13 @@ export class SuggestionsService {
   }
 
   async deleteSuggestion(id: number) {
-    await this.prisma.suggestions.delete({ where: { id } });
+    const deleted = await this.prisma.suggestions.delete({
+      where: { id },
+      include: { images: true },
+    });
+
+    for (const image of deleted.images) {
+      await rm(join('uploads', image.resource_id));
+    }
   }
 }
