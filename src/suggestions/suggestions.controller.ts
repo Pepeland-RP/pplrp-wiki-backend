@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
   Query,
@@ -53,6 +55,12 @@ export class SuggestionsController {
       if (files) await Promise.all([files.map(f => rm(f.path))]);
       throw e;
     }
+  }
+
+  @Delete(':id')
+  @Auth()
+  async deleteSuggestion(@Param('id') id: string) {
+    await this.suggestionsService.deleteSuggestion(parseInt(id));
   }
 
   @Get()

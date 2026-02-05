@@ -43,11 +43,16 @@ export class SuggestionsService {
     });
 
     return suggestions.reverse().map(sug => ({
+      id: sug.id,
       nickname: sug.nickname,
       content: sug.content,
       created_at: sug.created_at,
       images: sug.images.map(i => ({ id: i.id, resource_id: i.resource_id })),
       links: sug.links.map(l => l.content),
     }));
+  }
+
+  async deleteSuggestion(id: number) {
+    await this.prisma.suggestions.delete({ where: { id } });
   }
 }

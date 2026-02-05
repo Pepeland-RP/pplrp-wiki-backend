@@ -103,7 +103,7 @@ model SuggestionImage {
 
   resource_id String
 
-  suggestion   Suggestions? @relation(fields: [suggestionId], references: [id])
+  suggestion   Suggestions? @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
   suggestionId Int?
 }
 
@@ -112,6 +112,6 @@ model SuggestionLink {
 
   content String
 
-  suggestion   Suggestions? @relation(fields: [suggestionId], references: [id])
+  suggestion   Suggestions? @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
   suggestionId Int?
 }
