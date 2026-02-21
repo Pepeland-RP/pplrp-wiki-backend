@@ -28,10 +28,12 @@ export class SuggestionsService {
 
       if (data.links.length !== 0) {
         await tx.suggestionLink.createMany({
-          data: data.links.map(l => ({
-            content: l,
-            suggestionId: suggestion.id,
-          })),
+          data: data.links
+            .filter(i => !!i)
+            .map(l => ({
+              content: l,
+              suggestionId: suggestion.id,
+            })),
         });
       }
     });
