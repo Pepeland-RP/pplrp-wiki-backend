@@ -40,6 +40,7 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get('items')
+  @Auth()
   async getAllItems() {
     return await this.adminService.getMinecraftItems();
   }

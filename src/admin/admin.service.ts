@@ -8,20 +8,24 @@ import { join } from 'path';
 export class AdminService {
   constructor(private prisma: PrismaService) {}
 
+  /** Remove asset from uploads store */
   async removeAsset(id: string) {
     await rm(join('uploads', id));
   }
 
+  /** Get all minecraft items */
   async getMinecraftItems() {
     return await this.prisma.minecraftItem.findMany();
   }
 
+  /** Create one minecraft item */
   async createMinecraftItem(data: CreateMinecraftItemDTO, asset_id: string) {
     await this.prisma.minecraftItem.create({
       data: { name: data.name, str_id: data.str_id, resource_id: asset_id },
     });
   }
 
+  /** Update one minecraft item by id */
   async updateMinecraftItem(
     id: string,
     data: CreateMinecraftItemDTO,
@@ -42,6 +46,7 @@ export class AdminService {
     }
   }
 
+  /** Delete one minecraft item by id */
   async deleteMinecraftItem(id: string) {
     const item = await this.prisma.minecraftItem.findUniqueOrThrow({
       where: { id: parseInt(id) },
@@ -50,6 +55,7 @@ export class AdminService {
     await this.prisma.minecraftItem.delete({ where: { id: item.id } });
   }
 
+  /** Create one season */
   async createSeason(name: string) {
     const existed = await this.prisma.season.findFirst({
       where: { name },
@@ -63,6 +69,7 @@ export class AdminService {
     return created.id;
   }
 
+  /** Create categories from provided list */
   async createCategories(categories: string[]) {
     const existing = await this.prisma.category.findMany({
       where: { name: { in: categories } },
