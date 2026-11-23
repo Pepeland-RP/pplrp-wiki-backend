@@ -4,34 +4,34 @@ import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreateMinecraftItemDTO {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name!: string;
 
   @IsNotEmpty()
   @IsString()
-  str_id: string;
+  str_id!: string;
 }
 
 export class CreateModelDTO {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name!: string;
 
   @IsNotEmpty()
   @IsString()
-  season: string;
+  season!: string;
 
   @IsNotEmpty()
   @Transform(i => JSON.parse(i.value))
   @IsInt({ each: true })
-  minecraftItem: number[];
+  minecraftItem!: number[];
 
   @IsNotEmpty()
   @Transform(i => JSON.parse(i.value))
   @IsString({ each: true })
-  category: string[];
+  category!: string[];
 
   // Будем уповать на чудо и что никакие шаловливые ручки не засунут сюда что-то кроме json
   @IsOptional()
   @Transform(i => JSON.parse(i.value))
-  gltfMeta: object;
+  gltfMeta!: object;
 }
